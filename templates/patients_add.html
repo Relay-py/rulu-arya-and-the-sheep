@@ -4,6 +4,58 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Patient</title>
+    <style>
+        .patient-list { margin: 20px; }
+        .patient-card { 
+            border: 1px solid #ddd; 
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+        }
+        .task-section { 
+            margin-top: 15px;
+            background: #f5f5f5;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .task-item { 
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+            padding: 8px;
+            background: white;
+            border-radius: 4px;
+        }
+        .task-checkbox {
+            margin-right: 10px;
+        }
+        .completed { 
+            text-decoration: line-through;
+            color: #666;
+        }
+        .task-form {
+            margin-top: 10px;
+            display: flex;
+            gap: 10px;
+        }
+        .task-form input {
+            flex: 1;
+            padding: 5px;
+        }
+        .task-form button {
+            padding: 5px 15px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .task-status {
+            margin-left: auto;
+            font-size: 0.9em;
+            color: #666;
+        }
+    </style>
 </head>
 <body>
     <h1>Add Patient</h1>
@@ -25,18 +77,113 @@
             {{ form.danger_level.label }}<br>
             {{ form.danger_level }}
         </p>
+        <p>
+            {{ form.notification_message.label }}<br>
+            {{ form.notification_message }}
+        </p>
         <p><input type="submit" value="Submit"></p>
     </form>
 
     <h2>Current Patients</h2>
-    {% for patient in our_patient %}
-    <div>
-        <p>Name: {{ patient.last_name }}</p>
-        <p>ID: {{ patient.id_number }}</p>
-        <p>Wait Time: {{ patient.estimated_wait_time }}</p>
-        <p>Danger Level: {{ patient.danger_level }}</p>
-        <hr>
+    <div class="patient-list">
+        {% for patient in our_patient %}
+        <div class="patient-card">
+            <h3>{{ patient.last_name }}</h3>
+            <p>ID: {{ patient.id_number }}</p>
+            <p>Wait Time: {{ patient.estimated_wait_time }}</p>
+            <p>Danger Level: {{ patient.danger_level }}</p>
+            {% if patient.task_message %}
+            <p>Task: {{ patient.task_message }}</p>
+            <p>Status: {{ "Completed" if patient.task_status else "Pending" }}</p>
+            {% endif %}
+            
+            <div class="task-section">
+                <h4>Tasks</h4>
+                <div class="task-list" id="tasks-{{ patient.id }}">
+                    {% for task in patient.tasks %}
+                    <div class="task-item" id="task-{{ task.id }}">
+                        <input type="checkbox" 
+                               class="task-checkbox"
+                               onchange="updateTaskStatus({{ task.id }}, this.checked)"
+                               {% if task.completed %}checked{% endif %}>
+                        <span class="task-description {% if task.completed %}completed{% endif %}">
+                            {{ task.description }}
+                        </span>
+                        <span class="task-status">
+                            {{ task.created_at.strftime('%Y-%m-%d %H:%M') }}
+                        </span>
+                    </div>
+                    {% endfor %}
+                </div>
+                <form action="/delete_patient/{{ patient.id }}" method="post">
+                    <button type="submit">Delete</button>
+                </form>
+                <form class="task-form" onsubmit="return addTask(event, {{ patient.id }})">
+                    <input type="text" name="task_description" placeholder="Add new task..." required>
+                    <button type="submit">Add</button>
+                </form>
+            </div>
+        </div>
+        {% endfor %}
     </div>
-    {% endfor %}
+    
+    <script>
+        function updateTaskStatus(taskId, completed) {
+            fetch('/update_task_status', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `task_id=${taskId}&completed=${completed}`
+            }).then(response => response.json())
+              .then(data => {
+                  if (data.status === 'success') {
+                      const taskElement = document.getElementById(`task-${taskId}`);
+                      const descriptionElement = taskElement.querySelector('.task-description');
+                      if (completed) {
+                          descriptionElement.classList.add('completed');
+                      } else {
+                          descriptionElement.classList.remove('completed');
+                      }
+                  }
+              });
+        }
+
+        function addTask(event, patientId) {
+            event.preventDefault();
+            const form = event.target;
+            const description = form.task_description.value;
+
+            fetch('/add_task', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `patient_id=${patientId}&task_description=${encodeURIComponent(description)}`
+            }).then(response => response.json())
+              .then(data => {
+                  if (data.status === 'success') {
+                      const taskList = document.getElementById(`tasks-${patientId}`);
+                      const newTask = document.createElement('div');
+                      newTask.className = 'task-item';
+                      newTask.id = `task-${data.task_id}`;
+                      newTask.innerHTML = `
+                          <input type="checkbox" 
+                                 class="task-checkbox"
+                                 onchange="updateTaskStatus(${data.task_id}, this.checked)">
+                          <span class="task-description">
+                              ${data.description}
+                          </span>
+                          <span class="task-status">
+                              Just now
+                          </span>
+                      `;
+                      taskList.appendChild(newTask);
+                      form.reset();
+                  }
+              });
+            return false;
+        }
+    </script>
 </body>
 </html>
