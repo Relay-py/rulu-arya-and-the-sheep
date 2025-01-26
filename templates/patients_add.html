@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Patient</title>
+</head>
+<body>
+    <h1>Add Patient</h1>
+    <form method="POST">
+        {{ form.csrf_token }}
+        <p>
+            {{ form.last_name.label }}<br>
+            {{ form.last_name }}
+        </p>
+        <p>
+            {{ form.id_number.label }}<br>
+            {{ form.id_number }}
+        </p>
+        <p>
+            {{ form.estimated_wait_time.label }}<br>
+            {{ form.estimated_wait_time }}
+        </p>
+        <p>
+            {{ form.danger_level.label }}<br>
+            {{ form.danger_level }}
+        </p>
+        <p><input type="submit" value="Submit"></p>
+    </form>
+
+    <h2>Current Patients</h2>
+    {% for patient in our_patient %}
+    <div>
+        <p>Name: {{ patient.last_name }}</p>
+        <p>ID: {{ patient.id_number }}</p>
+        <p>Wait Time: {{ patient.estimated_wait_time }}</p>
+        <p>Danger Level: {{ patient.danger_level }}</p>
+        <hr>
+    </div>
+    {% endfor %}
+</body>
+</html>
