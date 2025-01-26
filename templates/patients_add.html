@@ -126,6 +126,8 @@
         }
 
         .patients-list {
+            display: flex;
+            flex-direction: column;
             background: white;
             padding: 30px;
             border-radius: 15px;
@@ -324,9 +326,10 @@
         </div>
 
         <div class="patients-list">
+
             <h2>Current Patients</h2>
-            {% for patient in our_patient %}
             <div class="patient-card">
+                {% for patient in our_patient %}
                 <div class="patient-info">
                     <h3>{{ patient.last_name }}</h3>
                     <div class="patient-details">
@@ -334,6 +337,11 @@
                         <span class="danger-level danger-level-{{ patient.danger_level }}">
                             Level {{ patient.danger_level }}
                         </span>
+                        <form action="{{ url_for('delete_patient', patient_id=patient.id) }}" method="POST" style="display:inline">
+                            <button type="submit" class="delete-button">
+                                <i class="fas fa-trash"></i> 
+                            </button>
+                        </form>
                     </div>
                     <div class="task-section">
                         <form action="{{ url_for('add_task', patient_id=patient.id) }}" method="POST" class="task-input-group">
@@ -359,13 +367,8 @@
                         {% endif %}
                     </div>
                 </div>
-                <form action="{{ url_for('delete_patient', patient_id=patient.id) }}" method="POST" style="display: inline;">
-                    <button type="submit" class="delete-button">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </form>
+                {% endfor %}
             </div>
-            {% endfor %}
         </div>
     </div>
 </body>
