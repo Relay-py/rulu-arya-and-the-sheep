@@ -55,20 +55,40 @@
             font-size: 0.9em;
             color: #666;
         }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .logout-btn {
+            padding: 8px 15px;
+            background: #dc3545;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .logout-btn:hover {
+            background: #c82333;
+        }
     </style>
 </head>
 <body>
-    <h1>Add Patient</h1>
+    <div class="header">
+        <h1>Add Patient</h1>
+        <a href="{{ url_for('logout') }}" class="logout-btn">Logout</a>
+    </div>
     <form method="POST">
         {{ form.csrf_token }}
         <p>
             {{ form.last_name.label }}<br>
             {{ form.last_name }}
         </p>
-        <p>
-            {{ form.id_number.label }}<br>
-            {{ form.id_number }}
-        </p>
+        
         <p>
             {{ form.estimated_wait_time.label }}<br>
             {{ form.estimated_wait_time }}
@@ -77,10 +97,7 @@
             {{ form.danger_level.label }}<br>
             {{ form.danger_level }}
         </p>
-        <p>
-            {{ form.notification_message.label }}<br>
-            {{ form.notification_message }}
-        </p>
+
         <p><input type="submit" value="Submit"></p>
     </form>
 
