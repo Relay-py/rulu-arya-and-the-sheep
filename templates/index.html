@@ -1,49 +1,110 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hospital Waiting Room</title>
+    <title>Patient Dashboard</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 0;
-            padding: 20px;
+            padding: 0;
             background: #f5f5f5;
+        }
+        .header {
+            background: #fff;
+            padding: 1rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
         .container {
             max-width: 800px;
-            margin: 0 auto;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+        .card {
             background: white;
-            padding: 20px;
             border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
-        .info-box {
-            border: 1px solid #ddd;
+        .patient-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        .info-item {
             padding: 15px;
-            margin: 10px 0;
-            border-radius: 4px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            border-left: 4px solid #007bff;
         }
         .notification {
-            background: #f8f9fa;
-            padding: 10px;
+            padding: 12px;
+            margin: 8px 0;
+            background: #fff;
+            border-left: 4px solid #28a745;
+            border-radius: 4px;
+        }
+        .notification.pending {
+            border-left-color: #ffc107;
+        }
+        .logout-btn {
+            padding: 8px 15px;
+            background: #dc3545;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+        .logout-btn:hover {
+            background: #c82333;
+        }
+        .patient-name {
+            font-size: 1.5em;
+            margin: 0;
+        }
+        .patient-id {
+            color: #666;
             margin: 5px 0;
-            border-left: 4px solid #007bff;
         }
     </style>
 </head>
 <body>
+    <div class="header">
+        <div>
+            <h1 class="patient-name" id="patientName">Loading...</h1>
+            <p class="patient-id" id="patientId">ID: Loading...</p>
+        </div>
+        <a href="/logout" class="logout-btn">Logout</a>
+    </div>
+
     <div class="container">
-        <h1>Hospital Waiting Room Status</h1>
-        
-        <div class="info-box" id="patientInfo">
-            Loading patient information...
+        <div class="card">
+            <h2>Your Status</h2>
+            <div class="patient-info">
+                <div class="info-item">
+                    <h3>Wait Time</h3>
+                    <p id="waitTime">Loading...</p>
+                </div>
+                <div class="info-item">
+                    <h3>Queue Position</h3>
+                    <p id="queuePosition">Loading...</p>
+                </div>
+                <div class="info-item">
+                    <h3>Priority Level</h3>
+                    <p id="triageLevel">Loading...</p>
+                </div>
+            </div>
         </div>
 
-        <h2>Notifications</h2>
-        <div id="notifications">
-            Loading notifications...
+        <div class="card">
+            <h2>Your Tasks</h2>
+            <div id="notifications">
+                <p>Loading tasks...</p>
+            </div>
         </div>
     </div>
 
@@ -52,21 +113,26 @@
         fetch('/api/patient-info')
             .then(response => response.json())
             .then(data => {
-                document.getElementById('patientInfo').innerHTML = `
-                    <p>Wait Time: ${data.waitTime}</p>
-                    <p>Queue Position: ${data.queuePosition}</p>
-                    <p>Triage Level: ${data.triageLevel}</p>
-                    <p>Patient Name: ${data.patientName}</p>
-                `;
+                document.getElementById('patientName').textContent = data.patientName;
+                document.getElementById('patientId').textContent = `ID: ${data.idNumber}`;
+                document.getElementById('waitTime').textContent = data.waitTime;
+                document.getElementById('queuePosition').textContent = `#${data.queuePosition}`;
+                document.getElementById('triageLevel').textContent = data.triageLevel;
             });
 
+        // Fetch notifications/tasks
         fetch('/api/notifications')
             .then(response => response.json())
             .then(data => {
-                const notificationsHtml = data.map(notification => 
-                    `<div class="notification">${notification.message}</div>`
-                ).join('');
-                document.getElementById('notifications').innerHTML = notificationsHtml;
+                const notificationsHtml = data.map(notification => `
+                    <div class="notification ${notification.message.includes('Pending') ? 'pending' : ''}">
+                        <div>${notification.message}</div>
+                        <small>${notification.created_at}</small>
+                    </div>
+                `).join('');
+                document.getElementById('notifications').innerHTML = 
+                    data.length ? notificationsHtml : '<p>No tasks assigned yet.</p>';
             });
     </script>
 </body>
+</html>
