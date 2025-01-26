@@ -3,204 +3,370 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Patient</title>
+    <title>Add Patient - CURA</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
-        .patient-list { margin: 20px; }
-        .patient-card { 
-            border: 1px solid #ddd; 
-            padding: 15px;
-            margin-bottom: 15px;
-            border-radius: 5px;
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+        
+        body {
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+            background-image: url('background.jpeg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: #2c3e50;
         }
-        .task-section { 
-            margin-top: 15px;
-            background: #f5f5f5;
-            padding: 10px;
-            border-radius: 5px;
-        }
-        .task-item { 
-            display: flex;
-            align-items: center;
-            margin: 10px 0;
-            padding: 8px;
-            background: white;
-            border-radius: 4px;
-        }
-        .task-checkbox {
-            margin-right: 10px;
-        }
-        .completed { 
-            text-decoration: line-through;
-            color: #666;
-        }
-        .task-form {
-            margin-top: 10px;
-            display: flex;
-            gap: 10px;
-        }
-        .task-form input {
-            flex: 1;
-            padding: 5px;
-        }
-        .task-form button {
-            padding: 5px 15px;
-            background: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        .task-status {
-            margin-left: auto;
-            font-size: 0.9em;
-            color: #666;
-        }
-        .header {
+
+        header {
+            width: 100%;
+            background: #ffffff;
+            padding: 10px 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
+            position: relative;
         }
-        
-        .logout-btn {
-            padding: 8px 15px;
+
+        header img {
+            height: 50px;
+            width: auto;
+            object-fit: contain;
+            border-radius: 8px;
+            margin-right: 15px;
+        }
+
+        header h1 {
+            margin: 0;
+            color: rgb(206,163,190);
+        }
+
+        .logout-button {
+            position: absolute;
+            right: 50px;
+            background: rgb(206,163,190);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .logout-button:hover {
+            background: #b77da1;
+            transform: translateY(-2px);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 30px;
+        }
+
+        .add-patient-form {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #2c3e50;
+            font-weight: bold;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .submit-button {
+            background: rgb(206,163,190);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .submit-button:hover {
+            background: #b77da1;
+            transform: translateY(-2px);
+        }
+
+        .patients-list {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .patient-card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .patient-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .patient-info {
+            flex-grow: 1;
+        }
+
+        .patient-info h3 {
+            margin: 0;
+            color: #2c3e50;
+        }
+
+        .patient-details {
+            color: #666;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+
+        .danger-level {
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+
+        .danger-level-1 { background: #4CAF50; color: white; }
+        .danger-level-2 { background: #FFC107; color: black; }
+        .danger-level-3 { background: #FF5722; color: white; }
+        .danger-level-4 { background: #F44336; color: white; }
+        .danger-level-5 { background: #D32F2F; color: white; }
+
+        .delete-button {
             background: #dc3545;
             color: white;
-            text-decoration: none;
-            border-radius: 4px;
             border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .delete-button:hover {
+            background: #c82333;
+        }
+
+        .flash-messages {
+            margin-bottom: 20px;
+        }
+
+        .flash-message {
+            padding: 10px 20px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .task-section {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .task-input-group {
+            display: flex;
+            flex: 1;
+            gap: 10px;
+        }
+
+        .task-input {
+            flex: 1;
+            padding: 8px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .task-button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .task-button:hover {
+            background: #45a049;
+        }
+
+        .task-status {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            margin-left: 10px;
+        }
+
+        .task-pending {
+            background: #FFC107;
+            color: black;
+        }
+
+        .task-completed {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .current-task {
+            margin-top: 15px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid rgb(206,163,190);
+        }
+
+        .task-actions {
+            margin-top: 10px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .complete-button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
             cursor: pointer;
         }
-        
-        .logout-btn:hover {
-            background: #c82333;
+
+        .clear-button {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>Add Patient</h1>
-        <a href="{{ url_for('logout') }}" class="logout-btn">Logout</a>
-    </div>
-    <form method="POST">
-        {{ form.csrf_token }}
-        <p>
-            {{ form.last_name.label }}<br>
-            {{ form.last_name }}
-        </p>
-        
-        <p>
-            {{ form.estimated_wait_time.label }}<br>
-            {{ form.estimated_wait_time }}
-        </p>
-        <p>
-            {{ form.danger_level.label }}<br>
-            {{ form.danger_level }}
-        </p>
+    <header>
+        <div style="display: flex; align-items: center;">
+            <img src="bonsai.png" alt="Hospital Logo">
+            <h1>CURA</h1>
+        </div>
+        <a href="/logout" class="logout-button">
+            <i class="fas fa-sign-out-alt"></i>
+            Logout
+        </a>
+    </header>
 
-        <p><input type="submit" value="Submit"></p>
-    </form>
+    <div class="container">
+        <div class="add-patient-form">
+            <h2>Add New Patient</h2>
+            <form method="POST">
+                {{ form.csrf_token }}
+                <div class="form-group">
+                    <label>Last Name</label>
+                    {{ form.last_name(class="form-control") }}
+                </div>
+                <div class="form-group">
+                    <label>Estimated Wait Time (minutes)</label>
+                    {{ form.estimated_wait_time(class="form-control") }}
+                </div>
+                <div class="form-group">
+                    <label>Triage Level (1-5)</label>
+                    {{ form.danger_level(class="form-control") }}
+                </div>
+                <button type="submit" class="submit-button">Add Patient</button>
+            </form>
+        </div>
 
-    <h2>Current Patients</h2>
-    <div class="patient-list">
-        {% for patient in our_patient %}
-        <div class="patient-card">
-            <h3>{{ patient.last_name }}</h3>
-            <p>ID: {{ patient.id_number }}</p>
-            <p>Wait Time: {{ patient.estimated_wait_time }}</p>
-            <p>Danger Level: {{ patient.danger_level }}</p>
-            {% if patient.task_message %}
-            <p>Task: {{ patient.task_message }}</p>
-            <p>Status: {{ "Completed" if patient.task_status else "Pending" }}</p>
-            {% endif %}
-            
-            <div class="task-section">
-                <h4>Tasks</h4>
-                <div class="task-list" id="tasks-{{ patient.id }}">
-                    {% for task in patient.tasks %}
-                    <div class="task-item" id="task-{{ task.id }}">
-                        <input type="checkbox" 
-                               class="task-checkbox"
-                               onchange="updateTaskStatus({{ task.id }}, this.checked)"
-                               {% if task.completed %}checked{% endif %}>
-                        <span class="task-description {% if task.completed %}completed{% endif %}">
-                            {{ task.description }}
-                        </span>
-                        <span class="task-status">
-                            {{ task.created_at.strftime('%Y-%m-%d %H:%M') }}
+        <div class="patients-list">
+            <h2>Current Patients</h2>
+            {% for patient in our_patient %}
+            <div class="patient-card">
+                <div class="patient-info">
+                    <h3>{{ patient.last_name }}</h3>
+                    <div class="patient-details">
+                        ID: {{ patient.id_number }} | Wait Time: {{ patient.estimated_wait_time }} minutes
+                        <span class="danger-level danger-level-{{ patient.danger_level }}">
+                            Level {{ patient.danger_level }}
                         </span>
                     </div>
-                    {% endfor %}
+                    <div class="task-section">
+                        <form action="{{ url_for('add_task', patient_id=patient.id) }}" method="POST" class="task-input-group">
+                            <input type="text" name="task_message" class="task-input" placeholder="Add a task for patient...">
+                            <button type="submit" class="task-button">
+                                <i class="fas fa-tasks">Assign Task</i> 
+                            </button>
+                        </form>
+                        </div>
+                        <br>
+                        {% if patient.task_message %}
+                        <div class="current-task">
+                            <h4>Current Task:</h4>
+                            <p>{{ patient.task_message }}</p>
+                            <div class="task-actions">
+                                <form action="{{ url_for('clear_task', patient_id=patient.id) }}" method="POST" style="display: inline;">
+                                    <button type="submit" class="clear-button">
+                                        <i class="fas fa-times">Clear Task</i> 
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
                 </div>
-                <form action="/delete_patient/{{ patient.id }}" method="post">
-                    <button type="submit">Delete</button>
-                </form>
-                <form class="task-form" onsubmit="return addTask(event, {{ patient.id }})">
-                    <input type="text" name="task_description" placeholder="Add new task..." required>
-                    <button type="submit">Add</button>
+                <form action="{{ url_for('delete_patient', patient_id=patient.id) }}" method="POST" style="display: inline;">
+                    <button type="submit" class="delete-button">
+                        <i class="fas fa-trash"></i>
+                    </button>
                 </form>
             </div>
+            {% endfor %}
         </div>
-        {% endfor %}
     </div>
-    
-    <script>
-        function updateTaskStatus(taskId, completed) {
-            fetch('/update_task_status', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: `task_id=${taskId}&completed=${completed}`
-            }).then(response => response.json())
-              .then(data => {
-                  if (data.status === 'success') {
-                      const taskElement = document.getElementById(`task-${taskId}`);
-                      const descriptionElement = taskElement.querySelector('.task-description');
-                      if (completed) {
-                          descriptionElement.classList.add('completed');
-                      } else {
-                          descriptionElement.classList.remove('completed');
-                      }
-                  }
-              });
-        }
-
-        function addTask(event, patientId) {
-            event.preventDefault();
-            const form = event.target;
-            const description = form.task_description.value;
-
-            fetch('/add_task', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: `patient_id=${patientId}&task_description=${encodeURIComponent(description)}`
-            }).then(response => response.json())
-              .then(data => {
-                  if (data.status === 'success') {
-                      const taskList = document.getElementById(`tasks-${patientId}`);
-                      const newTask = document.createElement('div');
-                      newTask.className = 'task-item';
-                      newTask.id = `task-${data.task_id}`;
-                      newTask.innerHTML = `
-                          <input type="checkbox" 
-                                 class="task-checkbox"
-                                 onchange="updateTaskStatus(${data.task_id}, this.checked)">
-                          <span class="task-description">
-                              ${data.description}
-                          </span>
-                          <span class="task-status">
-                              Just now
-                          </span>
-                      `;
-                      taskList.appendChild(newTask);
-                      form.reset();
-                  }
-              });
-            return false;
-        }
-    </script>
 </body>
 </html>

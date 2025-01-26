@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entertainment Hub</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+        
+        body {
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+            background: #f5f5f5;
+        }
+
+        .patient-info-bar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 10px 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .patient-details {
+            display: flex;
+            gap: 20px;
+        }
+
+        .patient-info-item {
+            padding: 5px 15px;
+            background: rgb(206,163,190);
+            color: white;
+            border-radius: 20px;
+            font-size: 0.9em;
+        }
+
+        .content-wrapper {
+            margin-top: 80px;
+            padding: 20px;
+        }
+
+        .movie-section {
+            margin: 40px auto;
+            max-width: 1200px;
+        }
+
+        .section-title {
+            color: rgb(206,163,190);
+            font-size: 24px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid rgb(206,163,190);
+        }
+
+        .movie-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            padding: 20px 0;
+        }
+
+        .movie-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .movie-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .movie-image {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+        }
+
+        .movie-info {
+            padding: 15px;
+        }
+
+        .movie-title {
+            font-size: 1.1em;
+            margin: 0 0 10px 0;
+            color: #333;
+        }
+
+        .movie-platform {
+            display: inline-block;
+            padding: 3px 8px;
+            background: #f0f0f0;
+            border-radius: 4px;
+            font-size: 0.8em;
+            color: #666;
+        }
+
+        .back-button {
+            display: inline-block;
+            padding: 10px 20px;
+            background: rgb(206,163,190);
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 20px;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        .back-button:hover {
+            background: #b77da1;
+        }
+    </style>
+</head>
+<body>
+    <div class="patient-info-bar">
+        <div class="patient-details">
+            <div class="patient-info-item" id="patientName">Loading...</div>
+            <div class="patient-info-item" id="waitTime">Loading...</div>
+            <div class="patient-info-item" id="triageLevel">Loading...</div>
+        </div>
+        <a href="/index" class="back-button">Back to Dashboard</a>
+    </div>
+
+    <div class="content-wrapper">
+        <div class="movie-section">
+            <h2 class="section-title">Patients' Favorites</h2>
+            <div class="movie-grid">
+                <div class="movie-card">
+                    <img src="movie1.jpg" alt="Movie 1" class="movie-image">
+                    <div class="movie-info">
+                        <h3 class="movie-title">The Good Doctor</h3>
+                        <span class="movie-platform">Netflix</span>
+                    </div>
+                </div>
+                <!-- Add more movie cards -->
+                
+            </div>
+        </div>
+
+        <div class="movie-section">
+            <h2 class="section-title">Netflix Picks</h2>
+            <div class="movie-grid">
+                <!-- Netflix movies -->
+            </div>
+        </div>
+
+        <div class="movie-section">
+            <h2 class="section-title">Amazon Prime Selection</h2>
+            <div class="movie-grid">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function fetchPatientInfo() {
+            fetch('/api/patient-info', {
+                credentials: 'same-origin',
+                headers: {
+                    'Cache-Control': 'no-cache',
+                    'Pragma': 'no-cache'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('patientName').textContent = data.patientName;
+                document.getElementById('waitTime').textContent = `Wait: ${data.waitTime}`;
+                document.getElementById('triageLevel').textContent = data.triageLevel;
+            })
+            .catch(error => {
+                console.error('Error fetching patient info:', error);
+            });
+        }
+
+        // Update patient info every 30 seconds
+        document.addEventListener('DOMContentLoaded', function() {
+            fetchPatientInfo();
+            setInterval(fetchPatientInfo, 30000);
+        });
+    </script>
+</body>
+</html> 

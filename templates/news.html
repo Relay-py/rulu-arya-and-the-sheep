@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>News Hub</title>
+    <style>
+        .news-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .news-category {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .news-item {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .news-item:last-child {
+            border-bottom: none;
+        }
+
+        .category-title {
+            color: rgb(206,163,190);
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+    </style>
+</head>
+<body>
+    <div class="patient-info-bar">
+        <div class="patient-details">
+            <div class="patient-info-item" id="patientName">Loading...</div>
+            <div class="patient-info-item" id="waitTime">Loading...</div>
+            <div class="patient-info-item" id="triageLevel">Loading...</div>
+        </div>
+        <a href="/index" class="back-button">Back to Dashboard</a>
+    </div>
+
+    <div class="content-wrapper">
+        <div class="news-grid">
+            <div class="news-category">
+                <h2 class="category-title">Sports</h2>
+                <div class="news-item">
+                    <h3>Latest Sports News</h3>
+                    <p>Sports update content...</p>
+                </div>
+                <!-- Add more sports news items -->
+            </div>
+
+            <div class="news-category">
+                <h2 class="category-title">Politics</h2>
+                <div class="news-item">
+                    <h3>Political Updates</h3>
+                    <p>Politics news content...</p>
+                </div>
+                <!-- Add more political news items -->
+            </div>
+
+            <div class="news-category">
+                <h2 class="category-title">Science</h2>
+                <div class="news-item">
+                    <h3>Scientific Discoveries</h3>
+                    <p>Science news content...</p>
+                </div>
+                <!-- Add more science news items -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Same patient info fetching script as in entertainment.html
+    </script>
+</body>
+</html> 
